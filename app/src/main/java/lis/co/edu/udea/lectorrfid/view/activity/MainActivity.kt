@@ -1,6 +1,7 @@
 package lis.co.edu.udea.lectorrfid.view.activity
 
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,8 +13,9 @@ import lis.co.edu.udea.lectorrfid.`interface`.IViewMain
 import lis.co.edu.udea.lectorrfid.presenter.MainPresenter
 
 class MainActivity : BaseActivity(), IViewMain {
-       var bSend: Button? = null
-        lateinit var mainPresenter: MainPresenter
+
+    var bSend: Button? = null
+    lateinit var mainPresenter: MainPresenter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,12 +44,18 @@ class MainActivity : BaseActivity(), IViewMain {
                 ?: Toast.makeText(applicationContext, getString(R.string.system_string_message_errorToInflate), Toast.LENGTH_LONG).show()
     }
 
-    override fun initCameraController() {
-    }
-
-    override fun showCamera() {
+    override fun showPictureError() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun takePicture() {
+        Thread {
+            mainPresenter.takePicture()
+        }.start()
+    }
+
+    override fun showPreview(photo: Bitmap) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
 }

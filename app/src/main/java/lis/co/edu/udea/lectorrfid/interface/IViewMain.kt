@@ -1,8 +1,12 @@
 package lis.co.edu.udea.lectorrfid.`interface`
 
+import android.graphics.Bitmap
+
 interface IViewMain {
 
-    fun initCameraController()
+    fun takePicture()
 
-    fun showCamera()
+    fun showPreview(photo:Bitmap)
+
+    fun showPictureError()
 }

@@ -4,12 +4,17 @@ import android.Manifest
 import android.graphics.PixelFormat
 import android.hardware.Camera
 import android.os.AsyncTask
+import android.os.Environment
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import kotlinx.android.synthetic.main.activity_main.*
 import lis.co.edu.udea.lectorrfid.util.Tool
 import lis.co.edu.udea.lectorrfid.view.activity.BaseActivity
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
 import java.io.IOException
+import java.util.*
 
 class CameraController(private val activity: BaseActivity) : SurfaceHolder.Callback {
 
@@ -70,6 +75,29 @@ class CameraController(private val activity: BaseActivity) : SurfaceHolder.Callb
             return camera
         }
 
+    }
+
+    fun takePicture():Boolean{
+        val pictureCallBack:Camera.PictureCallback = object : Camera.PictureCallback{
+            override fun onPictureTaken(data: ByteArray?, camera: Camera?) {
+                try {
+                    val image_Name = "${Calendar.getInstance().timeInMillis}.jpg"
+                    val file = File(Environment.getExternalStorageDirectory(),image_Name)
+                    val image = FileOutputStream(file)
+                    image.write(data)
+                    image.close()
+                }catch (e: FileNotFoundException){
+                    e.printStackTrace()
+                }catch (e:IOException){
+                    e.printStackTrace()
+                }
+
+            }
+
+        }
+        mCamera?.takePicture(null,null,pictureCallBack)
+        preview = false
+        return true
     }
 
 }
