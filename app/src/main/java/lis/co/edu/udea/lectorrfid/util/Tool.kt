@@ -2,8 +2,9 @@ package lis.co.edu.udea.lectorrfid.util
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import lis.co.edu.udea.lectorrfid.view.activity.BaseActivity
 
 class Tool {
@@ -21,6 +22,15 @@ class Tool {
             ActivityCompat.requestPermissions(baseActivity,
                     arrayOf(permission),
                     requestCode)
+        }
+
+        @JvmStatic
+        fun rotateBitmap(source:Bitmap, degree:Float):Bitmap{
+            val width = source.width
+            val height = source.height
+            val matrix: Matrix = Matrix()
+            matrix.setRotate(degree)
+            return Bitmap.createBitmap(source,0,0,width,height,matrix,true)
         }
     }
 

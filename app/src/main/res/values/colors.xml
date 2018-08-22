@@ -5,5 +5,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="inactive">#b3afaf</color>
     <color name="shadowButton">#CABBBBBB</color>
-    <color name="overlayCamera">#73424e34</color>
+    <color name="overlayCamera">#50424e34</color>
 </resources>

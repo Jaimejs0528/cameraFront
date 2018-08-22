@@ -31,10 +31,10 @@ open class BaseActivity : AppCompatActivity(), IBase {
                 ?: throw KotlinNullPointerException("No se ha creado el snackBar")
         mSnackBar?.duration = duration
         if (action) {
-            mSnackBar?.setAction(R.string.mainActivity_string_actionSnackBarCamera,
-                    {
-                        this.mSnackBar?.dismiss()
-                    })
+            mSnackBar?.setAction(R.string.mainActivity_string_actionSnackBarCamera
+            ) {
+                this.mSnackBar?.dismiss()
+            }
         }
         mSnackBar?.show()
     }

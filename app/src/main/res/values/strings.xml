@@ -6,4 +6,5 @@
     <string name="system_string_message_errorToInflate">No se pudieron cargar algunos componentes</string>
     <string name="mainActivity_string_messageCameraPermission">Need Camera Permission</string>
     <string name="mainActivity_string_actionSnackBarCamera">Allow Camera</string>
+    <string name="mainActivity_string_messageTakePicture">Has tomado una foto!</string>
 </resources>

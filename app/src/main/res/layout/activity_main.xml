@@ -31,6 +31,12 @@
             android:adjustViewBounds="true"
             android:src="@drawable/ic_camera_default"
              />
+        <ImageView
+            android:id="@+id/mainActivity_image_picturePreview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@android:color/transparent"
+            />
         <include layout="@layout/camera_overlay" />
     </FrameLayout>
 

@@ -6,7 +6,7 @@ interface IViewMain {
 
     fun takePicture()
 
-    fun showPreview(photo:Bitmap)
+    fun showPreview(photo: Bitmap?)
 
     fun showPictureError()
 }
