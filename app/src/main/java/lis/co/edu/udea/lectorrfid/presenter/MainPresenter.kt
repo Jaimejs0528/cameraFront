@@ -1,6 +1,7 @@
 package lis.co.edu.udea.lectorrfid.presenter
 
 import android.graphics.Bitmap
+import android.net.Uri
 import lis.co.edu.udea.lectorrfid.`interface`.IViewMain
 import lis.co.edu.udea.lectorrfid.model.CameraController
 import lis.co.edu.udea.lectorrfid.view.activity.MainActivity
@@ -14,7 +15,7 @@ class MainPresenter(activity: MainActivity) {
         cameraController.init(this)
     }
 
-    fun showPreview(photo:Bitmap){
+    fun showPreview(photo:Uri){
         view.showPreview(photo)
     }
 

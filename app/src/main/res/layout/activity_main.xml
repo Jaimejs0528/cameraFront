@@ -9,12 +9,14 @@
 
     <FrameLayout
         android:id="@+id/mainActivity_layout_cameraContainer"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="32dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:padding="0dp"
+        android:clipToPadding="false"
         android:adjustViewBounds="true"
         android:background="@drawable/frame_rounded"
         app:layout_constraintBottom_toTopOf="@+id/mainActivity_button_send"
@@ -31,13 +33,14 @@
             android:adjustViewBounds="true"
             android:src="@drawable/ic_camera_default"
              />
+        <include layout="@layout/camera_overlay" />
         <ImageView
             android:id="@+id/mainActivity_image_picturePreview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:scaleType="fitXY"
             android:src="@android:color/transparent"
             />
-        <include layout="@layout/camera_overlay" />
     </FrameLayout>
 
     <Button

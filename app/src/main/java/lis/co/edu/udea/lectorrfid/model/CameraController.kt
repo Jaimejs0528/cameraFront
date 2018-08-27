@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.PixelFormat
 import android.hardware.Camera
+import android.net.Uri
 import android.os.AsyncTask
 import android.os.Environment
 import android.util.Log
@@ -66,14 +67,14 @@ class CameraController(private val activity: BaseActivity) : SurfaceHolder.Callb
     override fun surfaceCreated(p0: SurfaceHolder?) {
         if (Tool.hasPermission(Manifest.permission.CAMERA, activity) &&
                 Tool.hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, activity)) {
-            mCamera = asyncCam(mCamera).execute().get()
+            mCamera = aSyncCam(mCamera).execute().get()
         } else {
             Tool.makeRequest(Manifest.permission.CAMERA, Tool.camera.CAMERA_PERMISSION, activity)
             Tool.makeRequest(Manifest.permission.WRITE_EXTERNAL_STORAGE, Tool.camera.CAMERA_PERMISSION, activity)
         }
     }
 
-    class asyncCam(var camera: Camera?) : AsyncTask<Void, Void, Camera>() {
+    class aSyncCam(var camera: Camera?) : AsyncTask<Void, Void, Camera>() {
         override fun doInBackground(vararg p0: Void?): Camera? {
             camera = Camera.open()
             camera?.setDisplayOrientation(90)
@@ -85,31 +86,20 @@ class CameraController(private val activity: BaseActivity) : SurfaceHolder.Callb
 
     }
 
-    class asyncTakePicture(var camera: Camera?,var presenter: MainPresenter): AsyncTask<Void, Void, Bitmap>() {
+    class aSyncTakePicture(var camera: Camera?,var presenter: MainPresenter): AsyncTask<Void, Void, Unit>() {
 
-        override fun onPostExecute(result: Bitmap) {
-            super.onPostExecute(result)
-            presenter.showPreview(result)
-            Log.d("hola","cam!")
-
-        }
-
-        override fun doInBackground(vararg p0: Void?): Bitmap {
-            val conf = Bitmap.Config.ARGB_8888 // see other conf types
-            val bmp = Bitmap.createBitmap(400, 400, conf)
-//            BitmapFactory.decodeResource(Resources.getSystem(),R.drawable.ic_error_404)
-            var picture: Bitmap =bmp
+        val imageName = "${Calendar.getInstance().timeInMillis}.jpg"
+        override fun doInBackground(vararg p0: Void?) {
             val pictureCallBack: Camera.PictureCallback = object : Camera.PictureCallback {
                 override fun onPictureTaken(data: ByteArray?, camera: Camera?) {
                     var image: FileOutputStream? = null
-                    val file: File
+                    var file: File? = null
                     try {
-                        val imageName = "${Calendar.getInstance().timeInMillis}.jpg"
                         file = File(Environment.getExternalStorageDirectory(), imageName)
                         image = FileOutputStream(file)
-                        picture = BitmapFactory.decodeByteArray(data, 0, data?.size!!)
+                        var picture: Bitmap = BitmapFactory.decodeByteArray(data, 0, data?.size!!)
                         picture = Tool.rotateBitmap(picture, 90f)
-                        picture.compress(Bitmap.CompressFormat.PNG, 100, image)
+                        picture.compress(Bitmap.CompressFormat.JPEG, 100, image)
 
                     } catch (e: FileNotFoundException) {
                         e.printStackTrace()
@@ -117,19 +107,16 @@ class CameraController(private val activity: BaseActivity) : SurfaceHolder.Callb
                         e.printStackTrace()
                     } finally {
                         image?.close()
+                        presenter.showPreview(Uri.fromFile(file))
                     }
-
                 }
-
             }
             camera?.takePicture(null, null, pictureCallBack)
-            return picture
         }
-
     }
 
     fun takePicture(): Boolean {
-        asyncTakePicture(mCamera,mPresenter).execute()
+       aSyncTakePicture(mCamera,mPresenter).execute()
         return true
     }
 

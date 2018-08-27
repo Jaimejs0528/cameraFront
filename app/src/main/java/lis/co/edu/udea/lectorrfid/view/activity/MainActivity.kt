@@ -1,9 +1,9 @@
 package lis.co.edu.udea.lectorrfid.view.activity
 
 
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -54,16 +54,17 @@ class MainActivity : BaseActivity(), IViewMain {
     }
 
     override fun showPictureError() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Glide.with(this).load(R.drawable.ic_error_404).into(iViewPreview)
     }
 
     override fun takePicture() {
         mainPresenter.takePicture()
     }
 
-    override fun showPreview(photo: Bitmap?) {
-//        runOnUiThread { Glide.with(this).load(photo).into(iViewPreview) }
-          iViewPreview.setImageBitmap(photo)
+    override fun showPreview(photo: Uri) {
+        Log.d("hola", "cam! ${photo}")
+        Glide.with(this).load(photo).into(iViewPreview)
+
     }
 
 }
