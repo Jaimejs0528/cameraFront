@@ -25,18 +25,19 @@ class Tool {
         }
 
         @JvmStatic
-        fun rotateBitmap(source:Bitmap, degree:Float):Bitmap{
+        fun rotateBitmap(source: Bitmap, degree: Float): Bitmap {
             val width = source.width
             val height = source.height
             val matrix: Matrix = Matrix()
             matrix.setRotate(degree)
-            return Bitmap.createBitmap(source,0,0,width,height,matrix,true)
+            return Bitmap.createBitmap(source, 0, 0, width, height, matrix, true)
         }
     }
 
     object camera {
         @JvmStatic
         val CAMERA_PERMISSION = 1000
+        val JPG_IMAGE = ".jpg"
     }
 
 }

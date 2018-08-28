@@ -41,8 +41,7 @@ open class BaseActivity : AppCompatActivity(), IBase {
     }
 
     override fun createProgressDialog() {
-        mProgressDialog = ProgressDialog.show(this, getString(R.string.mainActivity_string_messageTitlePleaseWait),
-                getString(R.string.mainActivity_string_messageNull))
+        mProgressDialog = ProgressDialog(this)
     }
 
     override fun showProgressDialog(message: Int, typeProgress: Int, isInfinite: Boolean) {

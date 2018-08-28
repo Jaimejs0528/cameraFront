@@ -2,9 +2,11 @@ package lis.co.edu.udea.lectorrfid.view.activity
 
 
 import android.app.ProgressDialog
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -25,7 +27,6 @@ class MainActivity : BaseActivity(), IViewMain {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         initViews()
         initListeners()
     }
@@ -45,6 +46,9 @@ class MainActivity : BaseActivity(), IViewMain {
         bSend.setOnClickListener {
             run {
                 val toast = Toast.makeText(applicationContext, getString(R.string.mainActivity_string_messageEmptyPicture), Toast.LENGTH_SHORT)
+                mainPresenter.initCameraController()
+                iViewPreview.setBackgroundColor(Color.TRANSPARENT)
+                iViewPreview.visibility = View.INVISIBLE
                 toast.show()
             }
         }
@@ -69,10 +73,9 @@ class MainActivity : BaseActivity(), IViewMain {
     }
 
     override fun showWaitPicture() {
-        runOnUiThread {
-            createProgressDialog()
-            showProgressDialog(R.string.mainActivity_string_messageChargeImage, ProgressDialog.STYLE_SPINNER)
-        }
+        createProgressDialog()
+        showProgressDialog(R.string.mainActivity_string_messageChargeImage, ProgressDialog.STYLE_SPINNER)
+
     }
 
     override fun updateProgressDialog(progress: Int, isInfinite: Boolean) {

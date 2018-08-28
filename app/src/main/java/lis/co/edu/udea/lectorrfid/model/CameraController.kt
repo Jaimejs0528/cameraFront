@@ -1,7 +1,6 @@
 package lis.co.edu.udea.lectorrfid.model
 
 import android.Manifest
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.PixelFormat
@@ -9,11 +8,9 @@ import android.hardware.Camera
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Environment
-import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import kotlinx.android.synthetic.main.activity_main.*
-import lis.co.edu.udea.lectorrfid.R
 import lis.co.edu.udea.lectorrfid.presenter.MainPresenter
 import lis.co.edu.udea.lectorrfid.util.Tool
 import lis.co.edu.udea.lectorrfid.view.activity.BaseActivity
@@ -29,7 +26,7 @@ class CameraController(private val activity: BaseActivity) : SurfaceHolder.Callb
     private lateinit var mSurfaceHolder: SurfaceHolder
     private var mCamera: Camera? = null
     private var preview = false
-    private lateinit var mPresenter:MainPresenter
+    private lateinit var mPresenter: MainPresenter
 
     fun init(presenter: MainPresenter) {
         activity.window.setFormat(PixelFormat.UNKNOWN)
@@ -38,6 +35,8 @@ class CameraController(private val activity: BaseActivity) : SurfaceHolder.Callb
         mSurfaceHolder.addCallback(this)
         mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS)
         mPresenter = presenter
+        surfaceCreated(mSurfaceHolder)
+        preview = true
     }
 
     override fun surfaceChanged(p0: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {
@@ -67,70 +66,73 @@ class CameraController(private val activity: BaseActivity) : SurfaceHolder.Callb
     override fun surfaceCreated(p0: SurfaceHolder?) {
         if (Tool.hasPermission(Manifest.permission.CAMERA, activity) &&
                 Tool.hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, activity)) {
-            mCamera = aSyncCam(mCamera).execute().get()
+            if (preview)
+                mCamera = ASyncCam(mCamera).execute().get()
         } else {
             Tool.makeRequest(Manifest.permission.CAMERA, Tool.camera.CAMERA_PERMISSION, activity)
             Tool.makeRequest(Manifest.permission.WRITE_EXTERNAL_STORAGE, Tool.camera.CAMERA_PERMISSION, activity)
         }
     }
 
-    class aSyncCam(var camera: Camera?) : AsyncTask<Void, Void, Camera>() {
+    class ASyncCam(var camera: Camera?) : AsyncTask<Void, Void, Camera>() {
         override fun doInBackground(vararg p0: Void?): Camera? {
             camera = Camera.open()
             camera?.setDisplayOrientation(90)
-            val parms: Camera.Parameters? = this.camera?.parameters
-            parms?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
-            camera?.parameters = parms
+            val params: Camera.Parameters? = this.camera?.parameters
+            params?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+            camera?.parameters = params
             return camera
         }
 
     }
 
-    class aSyncTakePicture(var camera: Camera?,var presenter: MainPresenter): AsyncTask<Void, Void, Unit>() {
-        override fun onProgressUpdate(vararg values: Void?) {
-            presenter.updateProgress()
-            super.onProgressUpdate(*values)
-        }
-
+    class ASyncTakePicture(var presenter: MainPresenter) : AsyncTask<ByteArray, Void, File>() {
         override fun onPreExecute() {
             super.onPreExecute()
             presenter.showWaitPicture()
         }
 
-        val imageName = "${Calendar.getInstance().timeInMillis}.jpg"
-        override fun doInBackground(vararg p0: Void?) {
-            val pictureCallBack: Camera.PictureCallback = object : Camera.PictureCallback {
-                override fun onPictureTaken(data: ByteArray?, camera: Camera?) {
-                    var image: FileOutputStream? = null
-                    var file: File? = null
-                    try {
-                        file = File(Environment.getExternalStorageDirectory(), imageName)
-                        image = FileOutputStream(file)
-                        var picture: Bitmap = BitmapFactory.decodeByteArray(data, 0, data?.size!!)
-                        picture = Tool.rotateBitmap(picture, 90f)
-                        picture.compress(Bitmap.CompressFormat.JPEG, 100, image)
+        override fun onPostExecute(result: File?) {
+            super.onPostExecute(result)
+            presenter.showPreview(Uri.fromFile(result))
+            presenter.dismissProgressDialog()
+        }
 
-                    } catch (e: FileNotFoundException) {
-                        e.printStackTrace()
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    } finally {
-                        image?.close()
-                        presenter.showPreview(Uri.fromFile(file))
-                        presenter.dismissProgressDialog()
-                        camera?.stopPreview()
-                        camera?.release()
-                    }
-                }
+        override fun doInBackground(vararg data: ByteArray): File {
+            var image: FileOutputStream? = null
+            val imageName = "${Calendar.getInstance().timeInMillis}${Tool.camera.JPG_IMAGE}"
+            val file = File(Environment.getExternalStorageDirectory(), imageName)
+            try {
+
+                image = FileOutputStream(file)
+                var picture: Bitmap = BitmapFactory.decodeByteArray(data[0], 0, data[0].size)
+                picture = Tool.rotateBitmap(picture, 90f)
+                picture.compress(Bitmap.CompressFormat.JPEG, 100, image)
+                picture.recycle()
+            } catch (e: FileNotFoundException) {
+                e.printStackTrace()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            } finally {
+                image?.close()
             }
-            camera?.takePicture(null, null, pictureCallBack)
+            return file
         }
     }
 
     fun takePicture(): Boolean {
-       aSyncTakePicture(mCamera,mPresenter).execute()
-        preview = false
-        return true
+        if (preview) {
+            val pictureCallBack: Camera.PictureCallback = object : Camera.PictureCallback {
+                override fun onPictureTaken(data: ByteArray?, camera: Camera?) {
+                    val task = ASyncTakePicture(mPresenter)
+                    task.execute(data)
+                    surfaceDestroyed(mSurfaceHolder)
+                }
+            }
+            mCamera?.takePicture(null, null, pictureCallBack)
+            return true
+        }
+        return false
     }
 
 }

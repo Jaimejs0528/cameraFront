@@ -1,6 +1,5 @@
 package lis.co.edu.udea.lectorrfid.presenter
 
-import android.graphics.Bitmap
 import android.net.Uri
 import lis.co.edu.udea.lectorrfid.`interface`.IViewMain
 import lis.co.edu.udea.lectorrfid.model.CameraController
@@ -20,7 +19,7 @@ class MainPresenter(activity: MainActivity) {
     }
 
     fun takePicture() {
-        if (!cameraController.takePicture()) view.showPictureError()
+        !cameraController.takePicture()
     }
 
     fun showWaitPicture(){
