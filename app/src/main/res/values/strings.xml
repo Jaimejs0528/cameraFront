@@ -7,4 +7,7 @@
     <string name="mainActivity_string_messageCameraPermission">Se necesitan permisos de Camara y\n Almacenamiento</string>
     <string name="mainActivity_string_actionSnackBarCamera">Dar permisos</string>
     <string name="mainActivity_string_messageTakePicture">Has tomado una foto!</string>
+    <string name="mainActivity_string_messageTitlePleaseWait">Por favor espera...</string>
+    <string name="mainActivity_string_messageChargeImage">Almacenando Imagen</string>
+    <string name="mainActivity_string_messageNull">Ups! you shouldn\'t see this</string>
 </resources>

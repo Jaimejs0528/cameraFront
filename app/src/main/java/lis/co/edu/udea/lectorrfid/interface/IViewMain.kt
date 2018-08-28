@@ -9,4 +9,10 @@ interface IViewMain {
     fun showPreview(photo: Uri)
 
     fun showPictureError()
+
+    fun showWaitPicture()
+
+    fun updateProgressDialog(progress:Int = 5, isInfinite:Boolean = true)
+
+    fun dismissProgressDialog()
 }

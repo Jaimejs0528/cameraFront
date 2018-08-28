@@ -1,6 +1,7 @@
 package lis.co.edu.udea.lectorrfid.view.activity
 
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -13,7 +14,7 @@ import lis.co.edu.udea.lectorrfid.util.Tool
 @SuppressLint("Registered")
 open class BaseActivity : AppCompatActivity(), IBase {
     var mSnackBar: Snackbar? = null
-
+    var mProgressDialog: ProgressDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +38,35 @@ open class BaseActivity : AppCompatActivity(), IBase {
             }
         }
         mSnackBar?.show()
+    }
+
+    override fun createProgressDialog() {
+        mProgressDialog = ProgressDialog.show(this, getString(R.string.mainActivity_string_messageTitlePleaseWait),
+                getString(R.string.mainActivity_string_messageNull))
+    }
+
+    override fun showProgressDialog(message: Int, typeProgress: Int, isInfinite: Boolean) {
+        mProgressDialog?.setMessage(getString(message))
+        if (isInfinite) {
+            mProgressDialog?.setCancelable(false)
+            mProgressDialog?.isIndeterminate = true
+        }
+        mProgressDialog?.show()
+    }
+
+    override fun updateProgressDialog(progress: Int, isInfinite: Boolean) {
+        if (isInfinite)
+            mProgressDialog?.progress = mProgressDialog?.progress?.plus(progress) ?: 0
+        else
+            mProgressDialog?.progress = progress
+
+    }
+
+    override fun hideProgressDialog() {
+        if (mProgressDialog?.isShowing == true) {
+            mProgressDialog?.dismiss()
+            mProgressDialog = null
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

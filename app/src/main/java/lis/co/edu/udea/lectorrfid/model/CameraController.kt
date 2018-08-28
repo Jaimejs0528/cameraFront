@@ -87,6 +87,15 @@ class CameraController(private val activity: BaseActivity) : SurfaceHolder.Callb
     }
 
     class aSyncTakePicture(var camera: Camera?,var presenter: MainPresenter): AsyncTask<Void, Void, Unit>() {
+        override fun onProgressUpdate(vararg values: Void?) {
+            presenter.updateProgress()
+            super.onProgressUpdate(*values)
+        }
+
+        override fun onPreExecute() {
+            super.onPreExecute()
+            presenter.showWaitPicture()
+        }
 
         val imageName = "${Calendar.getInstance().timeInMillis}.jpg"
         override fun doInBackground(vararg p0: Void?) {
@@ -108,6 +117,9 @@ class CameraController(private val activity: BaseActivity) : SurfaceHolder.Callb
                     } finally {
                         image?.close()
                         presenter.showPreview(Uri.fromFile(file))
+                        presenter.dismissProgressDialog()
+                        camera?.stopPreview()
+                        camera?.release()
                     }
                 }
             }
@@ -117,6 +129,7 @@ class CameraController(private val activity: BaseActivity) : SurfaceHolder.Callb
 
     fun takePicture(): Boolean {
        aSyncTakePicture(mCamera,mPresenter).execute()
+        preview = false
         return true
     }
 

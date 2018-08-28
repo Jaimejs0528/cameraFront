@@ -8,4 +8,12 @@ interface IBase {
     fun createSnackBar(view: View)
 
     fun showSnackBar(message: Int, duration: Int = Snackbar.LENGTH_SHORT, action: Boolean = false)
+
+    fun createProgressDialog()
+
+    fun showProgressDialog(message: Int,typeProgress:Int,isInfinite:Boolean=true)
+
+    fun updateProgressDialog(progress:Int = 5, isInfinite: Boolean = true)
+
+    fun hideProgressDialog()
 }

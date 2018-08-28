@@ -23,5 +23,17 @@ class MainPresenter(activity: MainActivity) {
         if (!cameraController.takePicture()) view.showPictureError()
     }
 
+    fun showWaitPicture(){
+        view.showWaitPicture()
+    }
+
+    fun updateProgress(){
+        view.updateProgressDialog()
+    }
+
+    fun dismissProgressDialog(){
+        view.dismissProgressDialog()
+    }
+
 
 }
