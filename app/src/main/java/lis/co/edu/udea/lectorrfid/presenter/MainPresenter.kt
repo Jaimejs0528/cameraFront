@@ -14,6 +14,10 @@ class MainPresenter(activity: MainActivity) {
         cameraController.init(this)
     }
 
+    fun initPreviewCamera(){
+        cameraController.initPreviewCamera()
+    }
+
     fun showPreview(photo:Uri){
         view.showPreview(photo)
     }
@@ -26,13 +30,15 @@ class MainPresenter(activity: MainActivity) {
         view.showWaitPicture()
     }
 
-    fun updateProgress(){
-        view.updateProgressDialog()
+    fun hidePreview(){
+        view.hidePreview()
     }
 
     fun dismissProgressDialog(){
         view.dismissProgressDialog()
     }
 
-
+    fun keepScreeOn(isNeeded:Boolean = true){
+        view.keepScreenOn(isNeeded)
+    }
 }

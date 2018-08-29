@@ -53,14 +53,6 @@ open class BaseActivity : AppCompatActivity(), IBase {
         mProgressDialog?.show()
     }
 
-    override fun updateProgressDialog(progress: Int, isInfinite: Boolean) {
-        if (isInfinite)
-            mProgressDialog?.progress = mProgressDialog?.progress?.plus(progress) ?: 0
-        else
-            mProgressDialog?.progress = progress
-
-    }
-
     override fun hideProgressDialog() {
         if (mProgressDialog?.isShowing == true) {
             mProgressDialog?.dismiss()

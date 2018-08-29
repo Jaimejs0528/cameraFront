@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#689911</color>
     <color name="colorPrimaryDark">#003116</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#6c9a06</color>
     <color name="inactive">#b3afaf</color>
     <color name="shadowButton">#CABBBBBB</color>
     <color name="overlayCamera">#50424e34</color>

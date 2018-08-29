@@ -13,7 +13,5 @@ interface IBase {
 
     fun showProgressDialog(message: Int,typeProgress:Int,isInfinite:Boolean=true)
 
-    fun updateProgressDialog(progress:Int = 5, isInfinite: Boolean = true)
-
     fun hideProgressDialog()
 }

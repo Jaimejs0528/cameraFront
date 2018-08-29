@@ -1,6 +1,7 @@
 package lis.co.edu.udea.lectorrfid.model
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.PixelFormat
@@ -8,6 +9,7 @@ import android.hardware.Camera
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Environment
+import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import kotlinx.android.synthetic.main.activity_main.*
@@ -20,7 +22,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
 
-class CameraController(private val activity: BaseActivity) : SurfaceHolder.Callback {
+open class CameraController(private val activity: BaseActivity) : SurfaceHolder.Callback {
 
     private lateinit var mSurfaceView: SurfaceView
     private lateinit var mSurfaceHolder: SurfaceHolder
@@ -35,25 +37,9 @@ class CameraController(private val activity: BaseActivity) : SurfaceHolder.Callb
         mSurfaceHolder.addCallback(this)
         mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS)
         mPresenter = presenter
-        surfaceCreated(mSurfaceHolder)
-        preview = true
     }
 
     override fun surfaceChanged(p0: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {
-        if (preview) {
-            mCamera?.stopPreview()
-            preview = false
-        }
-
-        if (mCamera != null) {
-            try {
-                mCamera?.setPreviewDisplay(mSurfaceHolder)
-                mCamera?.startPreview()
-                preview = true
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
     }
 
     override fun surfaceDestroyed(p0: SurfaceHolder?) {
@@ -63,29 +49,47 @@ class CameraController(private val activity: BaseActivity) : SurfaceHolder.Callb
         preview = false
     }
 
+    fun initPreviewCamera() {
+        if (mCamera == null) {
+            ASyncCam().execute(mSurfaceHolder)
+            }
+    }
+
     override fun surfaceCreated(p0: SurfaceHolder?) {
         if (Tool.hasPermission(Manifest.permission.CAMERA, activity) &&
                 Tool.hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, activity)) {
-            if (preview)
-                mCamera = ASyncCam(mCamera).execute().get()
-        } else {
+            ASyncCam().execute(mSurfaceHolder)
+           } else {
             Tool.makeRequest(Manifest.permission.CAMERA, Tool.camera.CAMERA_PERMISSION, activity)
             Tool.makeRequest(Manifest.permission.WRITE_EXTERNAL_STORAGE, Tool.camera.CAMERA_PERMISSION, activity)
         }
     }
 
-    class ASyncCam(var camera: Camera?) : AsyncTask<Void, Void, Camera>() {
-        override fun doInBackground(vararg p0: Void?): Camera? {
-            camera = Camera.open()
-            camera?.setDisplayOrientation(90)
-            val params: Camera.Parameters? = this.camera?.parameters
-            params?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
-            camera?.parameters = params
+
+    @SuppressLint("StaticFieldLeak")
+    inner class ASyncCam : AsyncTask<SurfaceHolder, Void, Camera>() {
+        override fun doInBackground(vararg surface: SurfaceHolder): Camera? {
+            val camera = Camera.open()
+            try {
+                camera.setDisplayOrientation(90)
+                val params: Camera.Parameters? = camera.parameters
+                params?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+                camera.parameters = params
+                camera?.setPreviewDisplay(surface[0])
+                camera.startPreview()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
             return camera
         }
-
+        override fun onPostExecute(result: Camera?) {
+            super.onPostExecute(result)
+            mCamera = result
+            mPresenter.hidePreview()
+            mPresenter.keepScreeOn()
+            preview = true
+        }
     }
-
     class ASyncTakePicture(var presenter: MainPresenter) : AsyncTask<ByteArray, Void, File>() {
         override fun onPreExecute() {
             super.onPreExecute()
@@ -103,7 +107,6 @@ class CameraController(private val activity: BaseActivity) : SurfaceHolder.Callb
             val imageName = "${Calendar.getInstance().timeInMillis}${Tool.camera.JPG_IMAGE}"
             val file = File(Environment.getExternalStorageDirectory(), imageName)
             try {
-
                 image = FileOutputStream(file)
                 var picture: Bitmap = BitmapFactory.decodeByteArray(data[0], 0, data[0].size)
                 picture = Tool.rotateBitmap(picture, 90f)
@@ -131,6 +134,8 @@ class CameraController(private val activity: BaseActivity) : SurfaceHolder.Callb
             }
             mCamera?.takePicture(null, null, pictureCallBack)
             return true
+        } else {
+            Log.d("camera", "no tomo fotos")
         }
         return false
     }

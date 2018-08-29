@@ -38,6 +38,8 @@ class Tool {
         @JvmStatic
         val CAMERA_PERMISSION = 1000
         val JPG_IMAGE = ".jpg"
+        val PNG_IMAGE = ".png"
+        val URI_STATE: String = "URI_PHOTO"
     }
 
 }
