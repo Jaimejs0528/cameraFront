@@ -14,5 +14,8 @@ interface IViewMain {
 
     fun dismissProgressDialog()
 
-    fun keepScreenOn(isNeeded:Boolean = true):Unit
+    fun keepScreenOn(isNeeded:Boolean = true)
+
+    fun showToastMessage(message:Int)
+
 }

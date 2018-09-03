@@ -73,7 +73,9 @@ open class CameraController(private val activity: BaseActivity) : SurfaceHolder.
             try {
                 camera.setDisplayOrientation(90)
                 val params: Camera.Parameters? = camera.parameters
-                params?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+                params?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO
+                params?.sceneMode = Camera.Parameters.SCENE_MODE_PORTRAIT
+                params?.whiteBalance = Camera.Parameters.WHITE_BALANCE_AUTO
                 camera.parameters = params
                 camera?.setPreviewDisplay(surface[0])
                 camera.startPreview()

@@ -2,6 +2,7 @@ package lis.co.edu.udea.lectorrfid.`interface`
 
 import android.support.design.widget.Snackbar
 import android.view.View
+import android.widget.Toast
 
 interface IBase {
 
@@ -14,4 +15,6 @@ interface IBase {
     fun showProgressDialog(message: Int,typeProgress:Int,isInfinite:Boolean=true)
 
     fun hideProgressDialog()
+
+    fun showToast(message: Int,duration: Int = Toast.LENGTH_SHORT)
 }

@@ -1,8 +1,10 @@
 package lis.co.edu.udea.lectorrfid.presenter
 
 import android.net.Uri
+import lis.co.edu.udea.lectorrfid.R
 import lis.co.edu.udea.lectorrfid.`interface`.IViewMain
 import lis.co.edu.udea.lectorrfid.model.CameraController
+import lis.co.edu.udea.lectorrfid.util.Tool
 import lis.co.edu.udea.lectorrfid.view.activity.MainActivity
 
 class MainPresenter(activity: MainActivity) {
@@ -14,11 +16,11 @@ class MainPresenter(activity: MainActivity) {
         cameraController.init(this)
     }
 
-    fun initPreviewCamera(){
+    fun initPreviewCamera() {
         cameraController.initPreviewCamera()
     }
 
-    fun showPreview(photo:Uri){
+    fun showPreview(photo: Uri) {
         view.showPreview(photo)
     }
 
@@ -26,19 +28,26 @@ class MainPresenter(activity: MainActivity) {
         !cameraController.takePicture()
     }
 
-    fun showWaitPicture(){
+    fun showWaitPicture() {
         view.showWaitPicture()
     }
 
-    fun hidePreview(){
+    fun hidePreview() {
         view.hidePreview()
     }
 
-    fun dismissProgressDialog(){
+    fun dismissProgressDialog() {
         view.dismissProgressDialog()
     }
 
-    fun keepScreeOn(isNeeded:Boolean = true){
+    fun keepScreeOn(isNeeded: Boolean = true) {
         view.keepScreenOn(isNeeded)
+    }
+
+    fun deleteImage(photo: Uri?) {
+        if (Tool.deletePhotoFile(photo?:Uri.parse("null")))
+            view.showToastMessage(R.string.mainActivity_string_messageSuccessDelete)
+        else
+            view.showToastMessage(R.string.mainActivity_string_messageErrorDelete)
     }
 }

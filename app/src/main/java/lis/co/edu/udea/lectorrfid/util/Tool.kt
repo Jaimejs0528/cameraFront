@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.net.Uri
 import android.support.v4.app.ActivityCompat
 import lis.co.edu.udea.lectorrfid.view.activity.BaseActivity
+import java.io.File
 
 class Tool {
 
@@ -31,6 +33,12 @@ class Tool {
             val matrix: Matrix = Matrix()
             matrix.setRotate(degree)
             return Bitmap.createBitmap(source, 0, 0, width, height, matrix, true)
+        }
+
+        @JvmStatic
+        fun deletePhotoFile(photo: Uri): Boolean {
+            val file = File(photo.toString())
+            return file.delete()
         }
     }
 

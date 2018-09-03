@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/opt/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/image/ic_center_focus_weak_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/opt/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_delete_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,13 +28,12 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="assetSourceType" value="FILE" />
-                            <entry key="color" value="67b437" />
-                            <entry key="height" value="512" />
-                            <entry key="outputName" value="ic_error_404" />
+                            <entry key="color" value="38b46b" />
+                            <entry key="height" value="48" />
+                            <entry key="outputName" value="ic_delete_unpressed" />
                             <entry key="overrideSize" value="true" />
                             <entry key="sourceFile" value="$USER_HOME$/Descargas/error-404.svg" />
-                            <entry key="width" value="512" />
+                            <entry key="width" value="48" />
                           </map>
                         </option>
                       </PersistentState>

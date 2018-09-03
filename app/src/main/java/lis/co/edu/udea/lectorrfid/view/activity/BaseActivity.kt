@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.widget.Toast
 import lis.co.edu.udea.lectorrfid.R
 import lis.co.edu.udea.lectorrfid.`interface`.IBase
 import lis.co.edu.udea.lectorrfid.util.Tool
@@ -58,6 +59,11 @@ open class BaseActivity : AppCompatActivity(), IBase {
             mProgressDialog?.dismiss()
             mProgressDialog = null
         }
+    }
+
+
+    override fun showToast(message: Int, duration: Int) {
+        Toast.makeText(this,getText(message),duration).show()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

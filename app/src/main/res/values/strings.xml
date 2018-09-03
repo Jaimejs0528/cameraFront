@@ -10,4 +10,6 @@
     <string name="mainActivity_string_messageTitlePleaseWait">Por favor espera...</string>
     <string name="mainActivity_string_messageChargeImage">Almacenando Imagen</string>
     <string name="mainActivity_string_messageNull">Ups! you shouldn\'t see this</string>
+    <string name="mainActivity_string_messageSuccessDelete">Eliminado con exito</string>
+    <string name="mainActivity_string_messageErrorDelete">No se pudo eliminar</string>
 </resources>

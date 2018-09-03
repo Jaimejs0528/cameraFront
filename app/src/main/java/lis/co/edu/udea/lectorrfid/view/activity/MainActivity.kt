@@ -22,6 +22,7 @@ class MainActivity : BaseActivity(), IViewMain {
     private lateinit var bSend: Button
     private lateinit var frameCamera: FrameLayout
     private lateinit var iViewPreview: ImageView
+    private lateinit var deleteButton: ImageView
     private lateinit var mainPresenter: MainPresenter
     private var mUriPhoto: Uri? = null
 
@@ -54,6 +55,7 @@ class MainActivity : BaseActivity(), IViewMain {
         this.bSend = mainActivity_button_send
         this.frameCamera = mainActivity_layout_cameraContainer
         this.iViewPreview = mainActivity_image_picturePreview
+        this.deleteButton = mainActivity_button_delete
         val uriString:String? = savedInstanceState?.getString(Tool.camera.URI_STATE)?:"null"
         Log.d("uri", uriString ?: "null")
         if (mUriPhoto != null) {
@@ -72,6 +74,12 @@ class MainActivity : BaseActivity(), IViewMain {
                 toast.show()
             }
         }
+        deleteButton.setOnClickListener {
+            run {
+                mainPresenter.deleteImage(mUriPhoto)
+                mainPresenter.initPreviewCamera()
+            }
+        }
         frameCamera.setOnClickListener {
             takePicture()
             keepScreenOn(false)
@@ -87,6 +95,7 @@ class MainActivity : BaseActivity(), IViewMain {
         mUriPhoto = photo
         Glide.with(this).load(photo).into(iViewPreview)
         iViewPreview.visibility = View.VISIBLE
+        deleteButton.visibility = View.VISIBLE
 
     }
 
@@ -98,10 +107,15 @@ class MainActivity : BaseActivity(), IViewMain {
 
     override fun hidePreview() {
         iViewPreview.visibility = View.INVISIBLE
+        deleteButton.visibility = View.GONE
     }
 
     override fun dismissProgressDialog() {
         hideProgressDialog()
+    }
+
+    override fun showToastMessage(message: Int) {
+        showToast(message)
     }
 
     override fun keepScreenOn(isNeeded: Boolean) {
