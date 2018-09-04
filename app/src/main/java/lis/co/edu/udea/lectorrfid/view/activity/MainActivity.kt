@@ -4,6 +4,7 @@ package lis.co.edu.udea.lectorrfid.view.activity
 import android.app.ProgressDialog
 import android.net.Uri
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
@@ -16,7 +17,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 import lis.co.edu.udea.lectorrfid.R
 import lis.co.edu.udea.lectorrfid.`interface`.IViewMain
 import lis.co.edu.udea.lectorrfid.presenter.MainPresenter
+import lis.co.edu.udea.lectorrfid.util.FilePath
 import lis.co.edu.udea.lectorrfid.util.Tool
+import java.io.File
 
 class MainActivity : BaseActivity(), IViewMain {
     private lateinit var bSend: Button
@@ -34,18 +37,26 @@ class MainActivity : BaseActivity(), IViewMain {
         initListeners()
     }
 
+    override fun onStart() {
+        super.onStart()
+        Log.d("photoUri", mUriPhoto.toString())
+        if (mUriPhoto != null) {
+            Glide.with(this).load(mUriPhoto).into(iViewPreview)
+            iViewPreview.visibility = View.VISIBLE
+        }
+
+    }
+
     override fun onSaveInstanceState(outState: Bundle?) {
         outState?.run {
-            putString(Tool.camera.URI_STATE, mUriPhoto?.toString())
+            putParcelable(Tool.camera.URI_STATE, mUriPhoto)
         }
         super.onSaveInstanceState(outState)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-            val uriString:String? = savedInstanceState?.getString(Tool.camera.URI_STATE)?:"null"
-            Log.d("uri", uriString ?: "null")
-            mUriPhoto = Uri.parse(uriString)
+        mUriPhoto = savedInstanceState.getParcelable(Tool.camera.URI_STATE)
     }
 
     private fun initViews(savedInstanceState: Bundle?) {
@@ -56,13 +67,8 @@ class MainActivity : BaseActivity(), IViewMain {
         this.frameCamera = mainActivity_layout_cameraContainer
         this.iViewPreview = mainActivity_image_picturePreview
         this.deleteButton = mainActivity_button_delete
-        val uriString:String? = savedInstanceState?.getString(Tool.camera.URI_STATE)?:"null"
-        Log.d("uri", uriString ?: "null")
-        if (mUriPhoto != null) {
-            Glide.with(this).load(mUriPhoto).into(iViewPreview)
-            iViewPreview.visibility = View.VISIBLE
-        }
-
+        mUriPhoto = savedInstanceState?.getParcelable(Tool.camera.URI_STATE)
+        Log.d("photoUri", mUriPhoto.toString())
     }
 
     private fun initListeners() {
@@ -76,7 +82,7 @@ class MainActivity : BaseActivity(), IViewMain {
         }
         deleteButton.setOnClickListener {
             run {
-                mainPresenter.deleteImage(mUriPhoto)
+                mainPresenter.deleteImage(File(FilePath.getPath(this, mUriPhoto)))
                 mainPresenter.initPreviewCamera()
             }
         }
@@ -91,7 +97,7 @@ class MainActivity : BaseActivity(), IViewMain {
     }
 
     override fun showPreview(photo: Uri) {
-        Log.d("hola", "cam! ${photo}")
+        Log.d("photoUri", "cam! ${photo}")
         mUriPhoto = photo
         Glide.with(this).load(photo).into(iViewPreview)
         iViewPreview.visibility = View.VISIBLE

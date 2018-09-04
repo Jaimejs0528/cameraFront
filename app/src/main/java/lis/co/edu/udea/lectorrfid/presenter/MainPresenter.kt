@@ -6,6 +6,7 @@ import lis.co.edu.udea.lectorrfid.`interface`.IViewMain
 import lis.co.edu.udea.lectorrfid.model.CameraController
 import lis.co.edu.udea.lectorrfid.util.Tool
 import lis.co.edu.udea.lectorrfid.view.activity.MainActivity
+import java.io.File
 
 class MainPresenter(activity: MainActivity) {
 
@@ -44,8 +45,8 @@ class MainPresenter(activity: MainActivity) {
         view.keepScreenOn(isNeeded)
     }
 
-    fun deleteImage(photo: Uri?) {
-        if (Tool.deletePhotoFile(photo?:Uri.parse("null")))
+    fun deleteImage(photo: File) {
+        if (Tool.deletePhotoFile(photo))
             view.showToastMessage(R.string.mainActivity_string_messageSuccessDelete)
         else
             view.showToastMessage(R.string.mainActivity_string_messageErrorDelete)

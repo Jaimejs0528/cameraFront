@@ -52,16 +52,18 @@ open class CameraController(private val activity: BaseActivity) : SurfaceHolder.
     fun initPreviewCamera() {
         if (mCamera == null) {
             ASyncCam().execute(mSurfaceHolder)
-            }
+        }
     }
 
     override fun surfaceCreated(p0: SurfaceHolder?) {
         if (Tool.hasPermission(Manifest.permission.CAMERA, activity) &&
                 Tool.hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, activity)) {
             ASyncCam().execute(mSurfaceHolder)
-           } else {
-            Tool.makeRequest(Manifest.permission.CAMERA, Tool.camera.CAMERA_PERMISSION, activity)
-            Tool.makeRequest(Manifest.permission.WRITE_EXTERNAL_STORAGE, Tool.camera.CAMERA_PERMISSION, activity)
+        } else {
+            Tool.makeRequest(arrayListOf(Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    Tool.camera.CAMERA_PERMISSION, activity)
         }
     }
 
@@ -84,6 +86,7 @@ open class CameraController(private val activity: BaseActivity) : SurfaceHolder.
             }
             return camera
         }
+
         override fun onPostExecute(result: Camera?) {
             super.onPostExecute(result)
             mCamera = result
@@ -92,6 +95,7 @@ open class CameraController(private val activity: BaseActivity) : SurfaceHolder.
             preview = true
         }
     }
+
     class ASyncTakePicture(var presenter: MainPresenter) : AsyncTask<ByteArray, Void, File>() {
         override fun onPreExecute() {
             super.onPreExecute()
