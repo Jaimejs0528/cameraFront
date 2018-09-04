@@ -4,6 +4,7 @@ import android.net.Uri
 import lis.co.edu.udea.lectorrfid.R
 import lis.co.edu.udea.lectorrfid.`interface`.IViewMain
 import lis.co.edu.udea.lectorrfid.model.CameraController
+import lis.co.edu.udea.lectorrfid.model.ServiceController
 import lis.co.edu.udea.lectorrfid.util.Tool
 import lis.co.edu.udea.lectorrfid.view.activity.MainActivity
 import java.io.File
@@ -12,6 +13,7 @@ class MainPresenter(activity: MainActivity) {
 
     private val cameraController: CameraController = CameraController(activity)
     private var view: IViewMain = activity
+    private val serviceController: ServiceController = ServiceController(this)
 
     fun initCameraController() {
         cameraController.init(this)
@@ -26,7 +28,7 @@ class MainPresenter(activity: MainActivity) {
     }
 
     fun takePicture() {
-        !cameraController.takePicture()
+        cameraController.takePicture()
     }
 
     fun showWaitPicture() {
@@ -50,5 +52,13 @@ class MainPresenter(activity: MainActivity) {
             view.showToastMessage(R.string.mainActivity_string_messageSuccessDelete)
         else
             view.showToastMessage(R.string.mainActivity_string_messageErrorDelete)
+    }
+
+    fun sendImage(photoImage: File) {
+        serviceController.sendImage(photoImage)
+    }
+
+    fun showResponse(message: Int){
+        view.showToastMessage(message)
     }
 }

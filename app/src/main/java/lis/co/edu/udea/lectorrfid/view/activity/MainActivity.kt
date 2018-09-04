@@ -4,7 +4,6 @@ package lis.co.edu.udea.lectorrfid.view.activity
 import android.app.ProgressDialog
 import android.net.Uri
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
@@ -44,7 +43,12 @@ class MainActivity : BaseActivity(), IViewMain {
             Glide.with(this).load(mUriPhoto).into(iViewPreview)
             iViewPreview.visibility = View.VISIBLE
         }
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mainPresenter.deleteImage(File(FilePath.getPath(this, mUriPhoto)))
+        mUriPhoto = null
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -75,9 +79,10 @@ class MainActivity : BaseActivity(), IViewMain {
 
         bSend.setOnClickListener {
             run {
-                val toast = Toast.makeText(applicationContext, getString(R.string.mainActivity_string_messageEmptyPicture), Toast.LENGTH_SHORT)
+//                val toast = Toast.makeText(applicationContext, getString(R.string.mainActivity_string_messageEmptyPicture), Toast.LENGTH_SHORT)
+                mainPresenter.sendImage(File(FilePath.getPath(this, mUriPhoto)))
                 mainPresenter.initPreviewCamera()
-                toast.show()
+//                toast.show()
             }
         }
         deleteButton.setOnClickListener {
@@ -114,6 +119,7 @@ class MainActivity : BaseActivity(), IViewMain {
     override fun hidePreview() {
         iViewPreview.visibility = View.INVISIBLE
         deleteButton.visibility = View.GONE
+        mUriPhoto = null
     }
 
     override fun dismissProgressDialog() {
