@@ -1,5 +1,6 @@
 package lis.co.edu.udea.lectorrfid.model
 
+import lis.co.edu.udea.lectorrfid.DTO.responseDTO
 import lis.co.edu.udea.lectorrfid.R
 import lis.co.edu.udea.lectorrfid.`interface`.IService
 import lis.co.edu.udea.lectorrfid.presenter.MainPresenter
@@ -25,16 +26,18 @@ class ServiceController(val mPresenter: MainPresenter) {
 
     fun sendImage(photoImage: File) {
         val reqFile = RequestBody.create(MediaType.parse("image/*"), photoImage)
-        val body = MultipartBody.Part.createFormData("upload", photoImage.name, reqFile)
+        val body = MultipartBody.Part.createFormData("image", photoImage.name, reqFile)
 
         val request = service.sendImage(body)
-        request.enqueue(object : Callback<String> {
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                t.printStackTrace()
+        request.enqueue(object : Callback<responseDTO> {
+            override fun onFailure(call: Call<responseDTO>, t: Throwable) {
                 mPresenter.showResponse(R.string.mainActivity_string_messageNull)
             }
 
-            override fun onResponse(call: Call<String>, response: Response<String>) {
+            override fun onResponse(call: Call<responseDTO>, response: Response<responseDTO>) {
+                if (response.body()?.code == Tool.Service.RESPONSE_SUCCESS_CODE) {
+                    mPresenter.showResponse(R.string.mainActivity_string_messageSuccessUpload)
+                }
             }
 
 

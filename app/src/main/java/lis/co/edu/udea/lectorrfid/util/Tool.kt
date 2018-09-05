@@ -46,9 +46,11 @@ class Tool {
         val URI_STATE: String = "URI_PHOTO"
     }
 
-    object Service{
-        const val SENDPHOTO ="/"//TODO add right route to consume the service
-        val BASE = "http://www.google.com"
+    object Service {
+        const val SENDPHOTO = "/uploadImage"
+        val BASE = "http://192.168.193.201:9999"
+        val RESPONSE_SUCCESS_CODE = "100"
+        val RESPONSE_INVALIDTYPE_CODE = "80"
     }
 
 }
