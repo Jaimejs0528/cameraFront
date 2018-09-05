@@ -10,7 +10,6 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.Toast
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_main.*
 import lis.co.edu.udea.lectorrfid.R
@@ -79,10 +78,12 @@ class MainActivity : BaseActivity(), IViewMain {
 
         bSend.setOnClickListener {
             run {
-//                val toast = Toast.makeText(applicationContext, getString(R.string.mainActivity_string_messageEmptyPicture), Toast.LENGTH_SHORT)
-                mainPresenter.sendImage(File(FilePath.getPath(this, mUriPhoto)))
-                mainPresenter.initPreviewCamera()
-//                toast.show()
+                if(mUriPhoto != null) {
+                    mainPresenter.sendImage(File(FilePath.getPath(this, mUriPhoto)))
+                    mainPresenter.initPreviewCamera()
+                }else{
+                    showToastMessage(R.string.mainActivity_string_messageEmptyPicture)
+                }
             }
         }
         deleteButton.setOnClickListener {

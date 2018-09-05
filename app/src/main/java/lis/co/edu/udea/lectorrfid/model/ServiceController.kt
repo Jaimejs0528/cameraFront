@@ -31,6 +31,7 @@ class ServiceController(val mPresenter: MainPresenter) {
         val request = service.sendImage(body)
         request.enqueue(object : Callback<responseDTO> {
             override fun onFailure(call: Call<responseDTO>, t: Throwable) {
+                mPresenter.deleteImage(photoImage)
                 mPresenter.showResponse(R.string.mainActivity_string_messageNull)
             }
 
