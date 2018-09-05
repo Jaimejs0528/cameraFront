@@ -1,9 +1,16 @@
 <resources>
-    <string name="app_name">Lector RFID</string>
-    <string name="title_APP">Lector RFID</string>
-    <string name="mainActivity_txtButton_send">Send Picture</string>
+    <string name="app_name">Capturador TIP</string>
+    <string name="title_APP">Capturador TIP</string>
+    <string name="mainActivity_txtButton_send">Enviar!</string>
     <string name="mainActivity_string_messageEmptyPicture">No has tomado una foto!</string>
     <string name="system_string_message_errorToInflate">No se pudieron cargar algunos componentes</string>
-    <string name="mainActivity_string_messageCameraPermission">Need Camera Permission</string>
-    <string name="mainActivity_string_actionSnackBarCamera">Allow Camera</string>
+    <string name="mainActivity_string_messageCameraPermission">Se necesitan permisos de Camara y\n Almacenamiento</string>
+    <string name="mainActivity_string_actionSnackBarCamera">Dar permisos</string>
+    <string name="mainActivity_string_messageTakePicture">Has tomado una foto!</string>
+    <string name="mainActivity_string_messageTitlePleaseWait">Por favor espera...</string>
+    <string name="mainActivity_string_messageChargeImage">Almacenando Imagen</string>
+    <string name="mainActivity_string_messageNull">Ups! you shouldn\'t see this</string>
+    <string name="mainActivity_string_messageSuccessDelete">Eliminado con exito</string>
+    <string name="mainActivity_string_messageErrorDelete">No se pudo eliminar</string>
+    <string name="mainActivity_string_messageSuccessUpload">La imagen se ha enviado exitosamente!</string>
 </resources>

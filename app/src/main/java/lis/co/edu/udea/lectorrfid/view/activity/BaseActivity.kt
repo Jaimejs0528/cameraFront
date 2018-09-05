@@ -1,11 +1,13 @@
 package lis.co.edu.udea.lectorrfid.view.activity
 
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.widget.Toast
 import lis.co.edu.udea.lectorrfid.R
 import lis.co.edu.udea.lectorrfid.`interface`.IBase
 import lis.co.edu.udea.lectorrfid.util.Tool
@@ -13,7 +15,7 @@ import lis.co.edu.udea.lectorrfid.util.Tool
 @SuppressLint("Registered")
 open class BaseActivity : AppCompatActivity(), IBase {
     var mSnackBar: Snackbar? = null
-
+    var mProgressDialog: ProgressDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,12 +33,37 @@ open class BaseActivity : AppCompatActivity(), IBase {
                 ?: throw KotlinNullPointerException("No se ha creado el snackBar")
         mSnackBar?.duration = duration
         if (action) {
-            mSnackBar?.setAction(R.string.mainActivity_string_actionSnackBarCamera,
-                    {
-                        this.mSnackBar?.dismiss()
-                    })
+            mSnackBar?.setAction(R.string.mainActivity_string_actionSnackBarCamera
+            ) {
+                this.mSnackBar?.dismiss()
+            }
         }
         mSnackBar?.show()
+    }
+
+    override fun createProgressDialog() {
+        mProgressDialog = ProgressDialog(this)
+    }
+
+    override fun showProgressDialog(message: Int, typeProgress: Int, isInfinite: Boolean) {
+        mProgressDialog?.setMessage(getString(message))
+        if (isInfinite) {
+            mProgressDialog?.setCancelable(false)
+            mProgressDialog?.isIndeterminate = true
+        }
+        mProgressDialog?.show()
+    }
+
+    override fun hideProgressDialog() {
+        if (mProgressDialog?.isShowing == true) {
+            mProgressDialog?.dismiss()
+            mProgressDialog = null
+        }
+    }
+
+
+    override fun showToast(message: Int, duration: Int) {
+        Toast.makeText(this,getText(message),duration).show()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
