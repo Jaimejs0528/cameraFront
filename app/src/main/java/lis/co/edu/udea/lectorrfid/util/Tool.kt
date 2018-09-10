@@ -11,18 +11,19 @@ import java.io.File
 class Tool {
 
     companion object {
+        val PACKAGE: String = "package"
+
         @JvmStatic
         fun hasPermission(code: String, context: Context) = ActivityCompat.checkSelfPermission(context,
                 code) == PackageManager.PERMISSION_GRANTED
 
         @JvmStatic
-        fun makeRequest(permissions: ArrayList<String>, requestCode: Int, baseActivity: BaseActivity) {
-            for (permission in permissions) {
+        fun makeRequest(permissions: Array<String>, requestCode: Int, baseActivity: BaseActivity) {
+
                 ActivityCompat.requestPermissions(baseActivity,
-                        arrayOf(permission),
-                        requestCode)
-            }
-        }
+                        permissions,requestCode)
+
+         }
 
         @JvmStatic
         fun rotateBitmap(source: Bitmap, degree: Float): Bitmap {

@@ -2,8 +2,10 @@ package lis.co.edu.udea.lectorrfid.view.activity
 
 
 import android.app.ProgressDialog
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
@@ -39,8 +41,10 @@ class MainActivity : BaseActivity(), IViewMain {
         super.onStart()
         Log.d("photoUri", mUriPhoto.toString())
         if (mUriPhoto != null) {
+            mainPresenter.destroyPreview()
             Glide.with(this).load(mUriPhoto).into(iViewPreview)
             iViewPreview.visibility = View.VISIBLE
+            deleteButton.visibility = View.VISIBLE
         }
     }
 
@@ -64,13 +68,15 @@ class MainActivity : BaseActivity(), IViewMain {
 
     private fun initViews(savedInstanceState: Bundle?) {
         mainPresenter = MainPresenter(this)
-        mainPresenter.initCameraController()
         createSnackBar(mainActivity_layout_container)
         this.bSend = mainActivity_button_send
         this.frameCamera = mainActivity_layout_cameraContainer
         this.iViewPreview = mainActivity_image_picturePreview
         this.deleteButton = mainActivity_button_delete
         mUriPhoto = savedInstanceState?.getParcelable(Tool.camera.URI_STATE)
+        if (mUriPhoto == null) {
+            mainPresenter.initCameraController()
+        }
         Log.d("photoUri", mUriPhoto.toString())
     }
 
@@ -78,10 +84,11 @@ class MainActivity : BaseActivity(), IViewMain {
 
         bSend.setOnClickListener {
             run {
-                if(mUriPhoto != null) {
+                if (mUriPhoto != null) {
                     mainPresenter.sendImage(File(FilePath.getPath(this, mUriPhoto)))
                     mainPresenter.initPreviewCamera()
-                }else{
+                    mUriPhoto = null
+                } else {
                     showToastMessage(R.string.mainActivity_string_messageEmptyPicture)
                 }
             }
@@ -137,4 +144,24 @@ class MainActivity : BaseActivity(), IViewMain {
         else
             window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == Tool.camera.CAMERA_PERMISSION) {
+            if (grantResults.isNotEmpty()) {
+                for (permission in grantResults) {
+                    if (permission != PackageManager.PERMISSION_GRANTED) {
+                        showSnackBar(R.string.mainActivity_string_messageCameraPermission, Snackbar.LENGTH_INDEFINITE, true)
+                        return
+                    }
+                }
+            } else {
+                showSnackBar(R.string.mainActivity_string_messageCameraPermission, Snackbar.LENGTH_INDEFINITE, true)
+                return
+            }
+            mainPresenter.initCameraController()
+            mainPresenter.initPreviewCamera()
+        }
+    }
+
 }

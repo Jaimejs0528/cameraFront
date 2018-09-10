@@ -49,6 +49,10 @@ open class CameraController(private val activity: BaseActivity) : SurfaceHolder.
         preview = false
     }
 
+    fun destroyPreview(){
+        surfaceDestroyed(mSurfaceHolder)
+    }
+
     fun initPreviewCamera() {
         if (mCamera == null) {
             ASyncCam().execute(mSurfaceHolder)
@@ -60,7 +64,7 @@ open class CameraController(private val activity: BaseActivity) : SurfaceHolder.
                 Tool.hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, activity)) {
             ASyncCam().execute(mSurfaceHolder)
         } else {
-            Tool.makeRequest(arrayListOf(Manifest.permission.CAMERA,
+            Tool.makeRequest(arrayOf(Manifest.permission.CAMERA,
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE),
                     Tool.camera.CAMERA_PERMISSION, activity)

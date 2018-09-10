@@ -23,6 +23,10 @@ class MainPresenter(activity: MainActivity) {
         cameraController.initPreviewCamera()
     }
 
+    fun destroyPreview(){
+        cameraController.destroyPreview()
+    }
+
     fun showPreview(photo: Uri) {
         view.showPreview(photo)
     }

@@ -2,8 +2,10 @@ package lis.co.edu.udea.lectorrfid.view.activity
 
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
-import android.content.pm.PackageManager
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -35,6 +37,10 @@ open class BaseActivity : AppCompatActivity(), IBase {
         if (action) {
             mSnackBar?.setAction(R.string.mainActivity_string_actionSnackBarCamera
             ) {
+                val settings = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                val uriApp = Uri.fromParts(Tool.PACKAGE, this.packageName, null)
+                settings.data = uriApp
+                startActivity(settings)
                 this.mSnackBar?.dismiss()
             }
         }
@@ -63,16 +69,7 @@ open class BaseActivity : AppCompatActivity(), IBase {
 
 
     override fun showToast(message: Int, duration: Int) {
-        Toast.makeText(this,getText(message),duration).show()
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == Tool.camera.CAMERA_PERMISSION) {
-            if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                showSnackBar(R.string.mainActivity_string_messageCameraPermission, Snackbar.LENGTH_INDEFINITE, true)
-            }
-        }
+        Toast.makeText(this, getText(message), duration).show()
     }
 
 }
