@@ -39,14 +39,21 @@ open class CameraController(private val activity: BaseActivity) : SurfaceHolder.
         mPresenter = presenter
     }
 
-    override fun surfaceChanged(p0: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {
-    }
-
-    override fun surfaceDestroyed(p0: SurfaceHolder?) {
-        mCamera?.stopPreview()
-        mCamera?.release()
-        mCamera = null
-        preview = false
+    fun takePicture(): Boolean {
+        if (preview) {
+            val pictureCallBack: Camera.PictureCallback = object : Camera.PictureCallback {
+                override fun onPictureTaken(data: ByteArray?, camera: Camera?) {
+                    val task = ASyncTakePicture(mPresenter)
+                    task.execute(data)
+                    surfaceDestroyed(mSurfaceHolder)
+                }
+            }
+            mCamera?.takePicture(null, null, pictureCallBack)
+            return true
+        } else {
+            Log.d("camera", "no tomo fotos")
+        }
+        return false
     }
 
     fun destroyPreview(){
@@ -57,6 +64,17 @@ open class CameraController(private val activity: BaseActivity) : SurfaceHolder.
         if (mCamera == null) {
             ASyncCam().execute(mSurfaceHolder)
         }
+    }
+
+    override fun surfaceChanged(p0: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {
+    }
+
+    override fun surfaceDestroyed(p0: SurfaceHolder?) {
+        mCamera?.stopPreview()
+        mCamera?.setPreviewCallback(null)
+        mCamera?.release()
+        mCamera = null
+        preview = false
     }
 
     override fun surfaceCreated(p0: SurfaceHolder?) {
@@ -131,23 +149,6 @@ open class CameraController(private val activity: BaseActivity) : SurfaceHolder.
             }
             return file
         }
-    }
-
-    fun takePicture(): Boolean {
-        if (preview) {
-            val pictureCallBack: Camera.PictureCallback = object : Camera.PictureCallback {
-                override fun onPictureTaken(data: ByteArray?, camera: Camera?) {
-                    val task = ASyncTakePicture(mPresenter)
-                    task.execute(data)
-                    surfaceDestroyed(mSurfaceHolder)
-                }
-            }
-            mCamera?.takePicture(null, null, pictureCallBack)
-            return true
-        } else {
-            Log.d("camera", "no tomo fotos")
-        }
-        return false
     }
 
 }

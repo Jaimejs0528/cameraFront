@@ -40,7 +40,7 @@
             android:id="@+id/mainActivity_image_picturePreview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="8dp"
+            android:layout_margin="6dp"
             android:scaleType="fitXY"
             android:visibility="invisible" />
 

@@ -41,17 +41,26 @@ class MainActivity : BaseActivity(), IViewMain {
         super.onStart()
         Log.d("photoUri", mUriPhoto.toString())
         if (mUriPhoto != null) {
-            mainPresenter.destroyPreview()
             Glide.with(this).load(mUriPhoto).into(iViewPreview)
             iViewPreview.visibility = View.VISIBLE
             deleteButton.visibility = View.VISIBLE
+        }else{
+            mainPresenter.initPreviewCamera()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mainPresenter.destroyPreview()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mainPresenter.deleteImage(File(FilePath.getPath(this, mUriPhoto)))
-        mUriPhoto = null
+        if(mUriPhoto != null) {
+            mainPresenter.deleteImage(File(FilePath.getPath(this, mUriPhoto)))
+            mUriPhoto = null
+        }
+
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
