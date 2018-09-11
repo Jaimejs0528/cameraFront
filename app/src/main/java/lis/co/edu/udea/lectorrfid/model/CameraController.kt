@@ -136,10 +136,11 @@ open class CameraController(private val activity: BaseActivity) : SurfaceHolder.
             val file = File(Environment.getExternalStorageDirectory(), imageName)
             try {
                 image = FileOutputStream(file)
-                var picture: Bitmap = BitmapFactory.decodeByteArray(data[0], 0, data[0].size)
+                val options: BitmapFactory.Options = BitmapFactory.Options()
+                options.inPreferredConfig = Bitmap.Config.RGB_565
+                var picture: Bitmap = BitmapFactory.decodeByteArray(data[0], 0, data[0].size,options)
                 picture = Tool.rotateBitmap(picture, 90f)
                 picture.compress(Bitmap.CompressFormat.JPEG, 100, image)
-                picture.recycle()
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
             } catch (e: IOException) {
